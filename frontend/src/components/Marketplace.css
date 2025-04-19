@@ -1,0 +1,465 @@
+/* src/components/Marketplace.css */
+
+.marketplace-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+  
+.marketplace-header {
+    /* color: #ffffff; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+  
+.marketplace-header h2 {
+    margin: 0;
+    color: #ffffff;
+}
+  
+.marketplace-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+  
+.properties-grid {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.5s ease forwards 0.2s;
+}
+  
+.grid-header {
+    color: #000000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.grid-header h3 {
+    margin: 0;
+}
+  
+.property-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+    max-height: 500px;
+}
+  
+.property-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.property-card:nth-child(1) { animation-delay: 0.3s; }
+.property-card:nth-child(2) { animation-delay: 0.4s; }
+.property-card:nth-child(3) { animation-delay: 0.5s; }
+.property-card:nth-child(4) { animation-delay: 0.6s; }
+.property-card:nth-child(5) { animation-delay: 0.7s; }
+.property-card:nth-child(6) { animation-delay: 0.8s; }
+.property-card:nth-child(n+7) { animation-delay: 0.9s; }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+  
+.property-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+  
+.property-card.selected {
+    border: 2px solid #4caf50;
+}
+  
+.property-card-image {
+    height: 120px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.placeholder-image {
+    font-size: 36px;
+    width: 60px;
+    height: 60px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.property-card-content {
+    padding: 12px;
+    color: #000000;
+}
+
+.approval-section{
+    color: #000000;
+}
+
+.listing-info{
+    color: #000000;
+}
+
+.property-details h3 {
+    color: #000000;
+}
+  
+.property-card-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    line-height: 1.2;
+}
+  
+.token-address {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+  
+.property-details-panel {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 300px;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.5s ease forwards 0.4s;
+}
+  
+.property-details h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+  
+.detail-row {
+    display: flex;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+  
+.detail-label {
+    flex: 0 0 120px;
+    font-weight: bold;
+    color: #666;
+}
+  
+.detail-value {
+    flex: 1;
+    word-break: break-all;
+}
+  
+.token-address, .owner-address {
+    font-family: monospace;
+}
+  
+.buy-button {
+    margin-top: 20px;
+    margin-right: 10px;
+    width: 40%;
+    padding: 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+.buy-button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+  
+.buy-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.sell-button {
+    margin-top: 20px;
+    margin-left: 10px;
+    width: 40%;
+    padding: 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+.sell-button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+  
+.sell-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+  
+.no-selection, .no-properties, .loading {
+    display: flex;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-style: italic;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards 0.3s;
+}
+  
+.connect-container {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 500px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+  
+/* Responsive design */
+@media (max-width: 768px) {
+    .marketplace-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .property-cards {
+        max-height: 300px;
+    }
+}
+
+.property-card-content h4 {
+    color: #000000;
+}
+  
+.property-card-content p {
+    color: #000000;
+}
+  
+.marketplace-header p {
+    color: #ffffff;
+}
+  
+.detail-label {
+    color: #000000;
+}
+  
+.detail-value {
+    color: #000000;
+}
+  
+.owner-address {
+    color: #000000;
+}
+  
+.no-selection p {
+    color: #000000;
+}
+
+.property-title {
+    color: black !important;
+}
+
+.cancel-button {
+    margin-right: 7px;
+    margin-top: 5px;
+}
+
+.confirm-button {
+    margin-left: 7px;
+    margin-top: 5px
+}
+
+.form-group input,
+input[type="text"],
+input[type="number"] {
+  box-sizing: border-box; /* This ensures padding and border are included in the element's width */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Specifically for the create-property container */
+.create-property {
+  color: #000000;
+  padding: 20px;
+  background-color: #b6b4b4;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUp 0.5s ease forwards 0.2s;
+  overflow: hidden; /* This prevents children from extending beyond the container */
+}
+
+.form-group {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+
+
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* For Marketplace.css */
+.marketplace-container {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.properties-grid {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards 0.3s;
+}
+
+.property-card {
+    /* Other properties remain the same */
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out forwards;
+}
+
+.property-card:nth-child(1) { animation-delay: 0.4s; }
+.property-card:nth-child(2) { animation-delay: 0.5s; }
+.property-card:nth-child(3) { animation-delay: 0.6s; }
+.property-card:nth-child(4) { animation-delay: 0.7s; }
+.property-card:nth-child(5) { animation-delay: 0.8s; }
+.property-card:nth-child(6) { animation-delay: 0.9s; }
+.property-card:nth-child(n+7) { animation-delay: 1s; }
+
+.property-details-panel {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards 0.6s;
+}
+
+.no-selection, .no-properties, .loading {
+    /* Other properties remain the same */
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards 0.5s;
+}
+
+.connect-container {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* For PropertyManager.css */
+.connect-container {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.account-info {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards 0.2s;
+}
+
+.create-property {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards 0.3s;
+}
+
+.properties-list {
+    /* Other properties remain the same */
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards 0.4s;
+}
+
+.properties-list li {
+    /* Other properties remain the same */
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out forwards;
+}
+
+.properties-list li:nth-child(1) { animation-delay: 0.5s; }
+.properties-list li:nth-child(2) { animation-delay: 0.6s; }
+.properties-list li:nth-child(3) { animation-delay: 0.7s; }
+.properties-list li:nth-child(4) { animation-delay: 0.8s; }
+.properties-list li:nth-child(5) { animation-delay: 0.9s; }
+.properties-list li:nth-child(n+6) { animation-delay: 1s; }

@@ -1,0 +1,77 @@
+/* src/App.css */
+
+.app-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.app-nav {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.app-nav button {
+  padding: 10px 20px;
+  background-color: #f1f1f1;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.app-nav button:hover {
+  background-color: #e0e0e0;
+}
+
+.app-nav button.active {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.app-content {
+  min-height: 500px;
+}
+
+/* General styling */
+button {
+  cursor: pointer;
+}
+
+/* Make sure we handle light/dark theme compatibility */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+  
+  .app-header h1 {
+    color: #f1f1f1;
+  }
+  
+  .app-nav button:not(.active) {
+    background-color: #333;
+    color: #e0e0e0;
+    border-color: #444;
+  }
+  
+  .app-nav button:not(.active):hover {
+    background-color: #444;
+  }
+}
