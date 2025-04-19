@@ -47,7 +47,7 @@
 
 import { useState } from "react";
 import PropertyManager from "./components/PropertyManager";
-import Marketplace from "./components/Marketplace3";
+import Marketplace from "./components/Marketplace4";
 import "./App.css";
 
 function App() {
