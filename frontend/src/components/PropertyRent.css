@@ -1,0 +1,328 @@
+.property-rent-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: property-rent-fadeInUp 0.5s ease forwards;
+}
+
+/* Rename animations to avoid conflicts */
+@keyframes property-rent-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes property-rent-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scope all other selectors */
+.property-rent-container h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.property-rent-container .section {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(15px);
+    animation: property-rent-fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.property-rent-container .section:nth-child(1) { animation-delay: 0.2s; }
+.property-rent-container .section:nth-child(2) { animation-delay: 0.3s; }
+.property-rent-container .section:nth-child(3) { animation-delay: 0.4s; }
+
+.property-rent-container .section h3 {
+    color: #000000;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.property-rent-container .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.property-rent-container .listing-form-container {
+    margin-top: 15px;
+}
+
+.property-rent-container .listing-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.property-rent-container .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.property-rent-container .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #000000;
+    font-weight: bold;
+}
+
+.property-rent-container .form-group select,
+.property-rent-container .form-group input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.property-rent-container .btn-primary {
+    margin-top: 10px;
+    margin-left: 40px;
+    padding: 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.property-rent-container .btn-primary:hover:not(:disabled) {
+    background-color: #45a049;
+    margin-left: 40px;
+}
+
+.property-rent-container .btn-primary:disabled {
+    margin-left: 40px;
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.property-rent-container .btn-secondary {
+    padding: 8px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 20px;
+}
+
+.property-rent-container .btn-secondary:hover:not(:disabled) {
+    background-color: #d32f2f;
+}
+
+.property-rent-container .btn-secondary:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.property-rent-container .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.property-rent-container .rentals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.property-rent-container .rental-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: property-rent-fadeIn 0.7s ease-out forwards;
+}
+
+.property-rent-container .rental-card:nth-child(1) { animation-delay: 0.4s; }
+.property-rent-container .rental-card:nth-child(2) { animation-delay: 0.5s; }
+.property-rent-container .rental-card:nth-child(3) { animation-delay: 0.6s; }
+.property-rent-container .rental-card:nth-child(4) { animation-delay: 0.7s; }
+.property-rent-container .rental-card:nth-child(5) { animation-delay: 0.8s; }
+.property-rent-container .rental-card:nth-child(n+6) { animation-delay: 0.9s; }
+
+.property-rent-container .rental-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.property-rent-container .rental-card h4 {
+    margin: 0 0 10px 0;
+    color: #000000;
+}
+
+.property-rent-container .rental-card p {
+    margin: 8px 0;
+    color: #000000;
+}
+
+.property-rent-container .rent-action {
+    margin-top: 12px;
+}
+
+.property-rent-container .properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.property-rent-container .property-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: property-rent-fadeIn 0.7s ease-out forwards;
+    cursor: pointer;
+    position: relative;
+}
+
+.property-rent-container .property-card.selected {
+    border: 2px solid #4caf50;
+}
+
+.property-rent-container .property-card.already-listed {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.property-rent-container .property-card:nth-child(1) { animation-delay: 0.4s; }
+.property-rent-container .property-card:nth-child(2) { animation-delay: 0.5s; }
+.property-rent-container .property-card:nth-child(3) { animation-delay: 0.6s; }
+.property-rent-container .property-card:nth-child(4) { animation-delay: 0.7s; }
+.property-rent-container .property-card:nth-child(5) { animation-delay: 0.8s; }
+.property-rent-container .property-card:nth-child(n+6) { animation-delay: 0.9s; }
+
+.property-rent-container .property-card:hover:not(.already-listed) {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.property-rent-container .property-card h4 {
+    margin: 0 0 10px 0;
+    color: #000000;
+}
+
+.property-rent-container .property-card p {
+    margin: 5px 0;
+    color: #000000;
+}
+
+.property-rent-container .property-card-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.property-rent-container .placeholder-image {
+    width: 60px;
+    height: 60px;
+    background-color: #4caf50;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 50%;
+}
+
+.property-rent-container .property-card-content {
+    position: relative;
+}
+
+.property-rent-container .listing-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff9800;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.property-rent-container .rate-input-form {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    animation: property-rent-fadeIn 0.5s ease-out forwards;
+}
+
+.property-rent-container .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border-left: 4px solid #c62828;
+}
+
+/* For wallet connection state */
+.property-rent-container .connect-container {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 500px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: property-rent-fadeInUp 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .property-rent-container .listing-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .property-rent-container .rentals-grid {
+        grid-template-columns: 1fr;
+    }
+    
+
+    .property-rent-container .properties-grid {
+        grid-template-columns: 1fr;
+    }
+}

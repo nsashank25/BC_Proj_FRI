@@ -10,8 +10,6 @@ contract PropertyRental {
         address propertyTokenAddress;
         uint256 weeklyRate; // Weekly rate in wei
         bool isActive;
-        uint256 lastRentedTime; // Timestamp when property was last rented
-        uint256 rentalDuration; // Duration in seconds (15 seconds for demo purposes)
     }
     
     // Mapping: property token address => rental listing
@@ -62,9 +60,7 @@ contract PropertyRental {
         rentalListings[propertyTokenAddress] = RentalListing({
             propertyTokenAddress: propertyTokenAddress,
             weeklyRate: weeklyRate,
-            isActive: true,
-            lastRentedTime: 0,
-            rentalDuration: 15 seconds // 15 seconds for demo purposes
+            isActive: true
         });
         
         // Add to listedProperties array if not already there
@@ -116,23 +112,18 @@ contract PropertyRental {
     }
     
     /**
-     * @notice Rents a property for a week (15 seconds in demo)
+     * @notice Rents a property and removes it from active listings
      * @param propertyTokenAddress The address of the property token
      */
     function rentProperty(address propertyTokenAddress) external payable {
         RentalListing storage listing = rentalListings[propertyTokenAddress];
         require(listing.isActive, "Property is not actively listed for rent");
         
-        // Check if the property is currently rented
-        bool isRented = listing.lastRentedTime > 0 && 
-                       (block.timestamp - listing.lastRentedTime) < listing.rentalDuration;
-        require(!isRented, "Property is currently rented");
-        
         // Verify payment amount
         require(msg.value >= listing.weeklyRate, "Insufficient payment for rental");
         
-        // Update rental status
-        listing.lastRentedTime = block.timestamp;
+        // Remove listing immediately
+        listing.isActive = false;
         
         // Distribute rent to token holders
         distributeRent(propertyTokenAddress, msg.value);
@@ -191,36 +182,6 @@ contract PropertyRental {
         }
         
         emit RentDistributed(propertyTokenAddress, totalDistributed, tokenHolders.length);
-    }
-    
-    /**
-     * @notice Checks if a property is currently rented
-     * @param propertyTokenAddress The address of the property token
-     * @return bool True if the property is currently rented, false otherwise
-     */
-    function isPropertyRented(address propertyTokenAddress) public view returns (bool) {
-        RentalListing storage listing = rentalListings[propertyTokenAddress];
-        
-        if (!listing.isActive) return false;
-        
-        return listing.lastRentedTime > 0 && 
-               (block.timestamp - listing.lastRentedTime) < listing.rentalDuration;
-    }
-    
-    /**
-     * @notice Returns time remaining until a property's rental period ends
-     * @param propertyTokenAddress The address of the property token
-     * @return uint256 Time remaining in seconds, 0 if not rented
-     */
-    function getRentalTimeRemaining(address propertyTokenAddress) public view returns (uint256) {
-        RentalListing storage listing = rentalListings[propertyTokenAddress];
-        
-        if (!listing.isActive || listing.lastRentedTime == 0) return 0;
-        
-        uint256 elapsedTime = block.timestamp - listing.lastRentedTime;
-        if (elapsedTime >= listing.rentalDuration) return 0;
-        
-        return listing.rentalDuration - elapsedTime;
     }
     
     /**

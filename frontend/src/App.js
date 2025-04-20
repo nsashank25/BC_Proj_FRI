@@ -3,7 +3,7 @@
 import { useState } from "react";
 import PropertyManager from "./components/PropertyManager";
 import Marketplace from "./components/Marketplace4";
-import PropertyRent from "./components/PropertyRent";
+import PropertyRent from "./components/PropertyRent2";
 import "./App.css";
 
 function App() {
