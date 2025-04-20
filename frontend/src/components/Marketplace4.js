@@ -551,18 +551,18 @@ export default function Marketplace() { // Rename component if file renamed
                           {propertyDetails.activeListings.map((listing, idx) => (
                               <li key={idx} className="listing-item">
                                   <div>
-                                      <span className="detail-label">Seller:</span>
+                                      <span className="detail-label">Seller: </span>
                                       <span className="detail-value seller-address">
                                           {listing.seller.substring(0, 6)}...{listing.seller.substring(listing.seller.length - 4)}
                                           {listing.seller.toLowerCase() === account.toLowerCase() && " (You)"}
                                       </span>
                                   </div>
                                   <div>
-                                      <span className="detail-label">Price:</span>
+                                      <span className="detail-label">Price: </span>
                                       <span className="detail-value">{ethers.formatEther(listing.pricePerToken)} ETH/token</span>
                                   </div>
                                   <div>
-                                      <span className="detail-label">Available:</span>
+                                      <span className="detail-label">Available: </span>
                                       <span className="detail-value">{ethers.formatUnits(listing.availableTokens, propertyDetails.decimals)} tokens</span>
                                   </div>
                                   {/* Add Buy button next to each listing if not the seller */}
@@ -574,7 +574,7 @@ export default function Marketplace() { // Rename component if file renamed
                                               setSelectedListingForBuy(listing);
                                               setShowBuyModal(true);
                                           }}
-                                          style={{ marginLeft: '10px', padding: '3px 8px', fontSize: '0.9em' }}
+                                          style={{ marginBottom: '15px' }}
                                       >
                                           Buy
                                       </button>
