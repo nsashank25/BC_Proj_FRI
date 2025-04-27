@@ -6,7 +6,6 @@ import "./PropertyToken.sol";
 import "hardhat/console.sol";
 
 contract TokenMarketplace {
-    // Token listing struct (remains the same)
     struct TokenListing {
         address tokenAddress;
         address seller;
@@ -15,29 +14,15 @@ contract TokenMarketplace {
         bool active;
     }
 
-    // Mapping from token address => seller address => listing details
-    // This remains the primary way to store/update individual listings
     mapping(address => mapping(address => TokenListing)) public listings;
 
-    // --- NEW DATA STRUCTURES ---
-    // Mapping: token address => array of seller addresses who currently *might* have active listings
-    // We don't remove sellers immediately when they sell out to keep it simpler,
-    // we just check the 'active' flag during retrieval.
     mapping(address => address[]) public sellersByToken;
 
-    // Mapping: token address => seller address => bool (true if seller is in sellersByToken array)
-    // Prevents adding the same seller multiple times to the array for a token.
     mapping(address => mapping(address => bool)) private isSellerTracked;
-    // --- END NEW DATA STRUCTURES ---
 
-
-    // Array to keep track of all token addresses that have EVER been listed (for browsing maybe)
-    // Keep this if you have UI depending on getAllListedTokens()
     address[] public listedTokens;
     mapping(address => bool) private tokenExists;
 
-
-    // Events (remain the same)
     event TokenListed(address indexed tokenAddress, address indexed seller, uint256 pricePerToken, uint256 amount);
     event ListingUpdated(address indexed tokenAddress, address indexed seller, uint256 pricePerToken, uint256 amount);
     event ListingCancelled(address indexed tokenAddress, address indexed seller);
@@ -65,18 +50,14 @@ contract TokenMarketplace {
         uint256 balance = token.balanceOf(msg.sender);
         require(balance >= amount, "Not enough tokens in your wallet");
 
-        // --- TRACKING SELLERS ---
-        // If first time THIS SELLER lists THIS TOKEN, add to sellersByToken array
         if (!isSellerTracked[tokenAddress][msg.sender]) {
             sellersByToken[tokenAddress].push(msg.sender);
             isSellerTracked[tokenAddress][msg.sender] = true;
         }
-        // Also track that the token exists overall (if needed for other UI)
         if (!tokenExists[tokenAddress]) {
             listedTokens.push(tokenAddress);
             tokenExists[tokenAddress] = true;
         }
-        // --- END TRACKING ---
 
         // Update or create listing (ensure it's marked active)
         listings[tokenAddress][msg.sender] = TokenListing({
@@ -84,7 +65,7 @@ contract TokenMarketplace {
             seller: msg.sender,
             pricePerToken: pricePerToken,
             availableTokens: amount,
-            active: true // Explicitly set active on new/updated listing
+            active: true // Set active on new/updated listing
         });
 
         emit TokenListed(tokenAddress, msg.sender, pricePerToken, amount);
@@ -92,12 +73,10 @@ contract TokenMarketplace {
 
     // Update token listing
     function updateListing(address tokenAddress, uint256 newPricePerToken, uint256 newAmount) external {
-        // Ensure seller is tracked if they weren't before (edge case, but good practice)
         if (!isSellerTracked[tokenAddress][msg.sender]) {
              sellersByToken[tokenAddress].push(msg.sender);
              isSellerTracked[tokenAddress][msg.sender] = true;
         }
-        // ... (rest of updateListing function remains the same) ...
 
         TokenListing storage listing = listings[tokenAddress][msg.sender];
         require(listing.active, "No active listing found to update"); // Check active before requiring seller match
@@ -105,22 +84,14 @@ contract TokenMarketplace {
 
         IERC20 token = IERC20(tokenAddress);
 
-        // If increasing amount, check allowance and balance relative to *new* total amount
         if (newAmount > listing.availableTokens) {
              uint256 currentAllowance = token.allowance(msg.sender, address(this));
-             // We need allowance for the *total* new amount, not just the difference,
-             // because listTokens might have consumed some allowance already.
-             // This check might be slightly too strict if multiple updates happen without re-approving max,
-             // but it's safer. The ideal flow is approve max once.
              require(currentAllowance >= newAmount, "Insufficient total allowance for new amount");
 
-             // Check balance against the *additional* amount needed
              uint256 additionalAmount = newAmount - listing.availableTokens;
              uint256 balance = token.balanceOf(msg.sender);
-             // Note: User needs balance for the listed amount, not just the diff
              require(balance >= newAmount, "Insufficient balance for new listing amount");
         } else if (newAmount == 0) {
-            // If updating to zero amount, treat as cancellation
             listing.active = false;
         }
 
@@ -141,13 +112,10 @@ contract TokenMarketplace {
 
         listing.active = false;
         listing.availableTokens = 0;
-        // We DON'T remove the seller from sellersByToken array here for simplicity.
-        // getActiveListingsForToken will filter based on the 'active' flag.
 
         emit ListingCancelled(tokenAddress, msg.sender);
     }
 
-    // Buy tokens (remains the same as the fully corrected version from previous step)
     function buyTokens(address tokenAddress, address seller, uint256 amount) external payable {
         TokenListing storage listing = listings[tokenAddress][seller];
         require(listing.active, "Listing is not active");
@@ -226,12 +194,6 @@ contract TokenMarketplace {
     }
 
 
-    // --- NEW VIEW FUNCTION ---
-    /**
-     * @notice Gets all currently active listings for a specific property token.
-     * @param _tokenAddress The address of the PropertyToken contract.
-     * @return An array of TokenListing structs that are currently active.
-     */
     function getActiveListingsForToken(address _tokenAddress) external view returns (TokenListing[] memory) {
         // Get the list of sellers who have listed this token at some point
         address[] storage sellers = sellersByToken[_tokenAddress];
@@ -249,7 +211,6 @@ contract TokenMarketplace {
         // Create the result array with the exact size
         TokenListing[] memory activeListings = new TokenListing[](activeCount);
         uint currentIndex = 0;
-        // Populate the result array
         for (uint i = 0; i < sellerCount; i++) {
             address currentSeller = sellers[i];
             // Fetch the listing again and check 'active' flag before adding
@@ -261,6 +222,5 @@ contract TokenMarketplace {
 
         return activeListings;
     }
-    // --- END NEW VIEW FUNCTION ---
 
 }

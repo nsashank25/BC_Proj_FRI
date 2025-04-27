@@ -21,9 +21,6 @@ contract PropertyToken is ERC20, Ownable {
         _addTokenHolder(owner);
     }
     
-    /**
-     * @notice Override the _beforeTokenTransfer hook to update token holder tracking
-     */
     function _update(address from, address to, uint256 amount) internal override {
         super._update(from, to, amount);
         
@@ -43,10 +40,6 @@ contract PropertyToken is ERC20, Ownable {
         }
     }
     
-    /**
-     * @notice Add a new token holder to the tracking array
-     * @param holder The address of the token holder to add
-     */
     function _addTokenHolder(address holder) private {
         if (!_isTokenHolder[holder]) {
             _tokenHolders.push(holder);
@@ -55,18 +48,10 @@ contract PropertyToken is ERC20, Ownable {
         }
     }
     
-    /**
-     * @notice Returns all addresses that have ever held tokens
-     * @return An array of all token holder addresses
-     */
     function getAllTokenHolders() external view returns (address[] memory) {
         return _tokenHolders;
     }
     
-    /**
-     * @notice Returns all addresses that currently hold tokens
-     * @return An array of current token holder addresses
-     */
     function getCurrentTokenHolders() external view returns (address[] memory) {
         // Count current holders (those with balance > 0)
         uint256 currentHolderCount = 0;

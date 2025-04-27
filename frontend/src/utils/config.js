@@ -1,5 +1,3 @@
-// src/utils/config.js
-
 export const PROPERTY_MANAGER_ADDRESS = "0x8BBD9EA40519b8a82Fc8e86855a83b57fDF28708"; 
 export const NETWORK_CHAIN_ID = "1337"; // Ganache default
 export const TOKEN_MARKETPLACE_ADDRESS = "0x30F756889E5B8F2eA1FDdb57e817E249121ef555";

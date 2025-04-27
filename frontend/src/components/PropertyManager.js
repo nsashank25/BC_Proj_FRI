@@ -1,9 +1,7 @@
-// src/components/PropertyManager.js
-
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import PropertyManagerABI from "../contracts/PropertyManager.json";
-import PropertyTokenABI from "../contracts/PropertyToken.json"; // Make sure you have this ABI file
+import PropertyTokenABI from "../contracts/PropertyToken.json"; 
 import { PROPERTY_MANAGER_ADDRESS } from "../utils/config";
 import './propmng.css';
 
@@ -37,7 +35,6 @@ export default function PropertyManager() {
         setContract(contract);
         setIsConnected(true);
         
-        // Listen for account changes
         window.ethereum.on("accountsChanged", handleAccountsChanged);
       } else {
         alert("MetaMask is not installed. Please install it to use this app.");
@@ -49,14 +46,13 @@ export default function PropertyManager() {
 
   const handleAccountsChanged = async (accounts) => {
     if (accounts.length === 0) {
-      // User disconnected their wallet
       setIsConnected(false);
       setAccount("");
       setSigner(null);
       setMyProperties([]);
       setPropertyBalances({});
     } else {
-      // User switched accounts
+      // Switched accounts
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
@@ -70,13 +66,11 @@ export default function PropertyManager() {
       );
       setContract(contract);
       
-      // Reload properties for new account
       loadMyProperties(contract, address);
     }
   };
 
   useEffect(() => {
-    // Check if already connected
     if (window.ethereum) {
       window.ethereum.request({ method: "eth_accounts" })
         .then(accounts => {
@@ -98,7 +92,6 @@ export default function PropertyManager() {
     if (!contract || !signer) return;
     try {
       setIsLoading(true);
-      // Create property using the correct function name from your contract
       const tx = await contract.createProperty(
         propertyName, 
         symbol, 
@@ -108,11 +101,8 @@ export default function PropertyManager() {
       
       console.log("Transaction sent:", tx.hash);
       
-      // Wait for transaction confirmation
       await tx.wait();
       alert("Property token created successfully!");
-      
-      // Reset form fields
       setPropertyName("");
       setSymbol("");
       setSupply(0);
@@ -135,14 +125,9 @@ export default function PropertyManager() {
     
     try {
       setIsLoading(true);
-      // Get token addresses created by this account
       const tokenAddresses = await contract.getMyProperties(account);
       console.log("My token addresses:", tokenAddresses);
-      
-      // Get all properties to find details for my tokens
       const allProperties = await contract.getAllProperties();
-      
-      // Filter properties that match my token addresses
       const myProps = allProperties.filter(prop => 
         tokenAddresses.includes(prop.tokenAddress)
       );
@@ -150,7 +135,6 @@ export default function PropertyManager() {
       console.log("My properties:", myProps);
       setMyProperties(myProps);
       
-      // Load token balances for each property
       await loadTokenBalances(myProps, account);
     } catch (error) {
       console.error("Error loading my properties:", error);
@@ -166,7 +150,6 @@ export default function PropertyManager() {
     
     for (const property of properties) {
       try {
-        // Create contract instance for each token
         const tokenContract = new ethers.Contract(
           property.tokenAddress,
           PropertyTokenABI.abi,

@@ -21,7 +21,6 @@ contract PropertyRental {
     
     PropertyManager public propertyManager;
     
-    // Events
     event PropertyListedForRent(address indexed propertyTokenAddress, uint256 weeklyRate);
     event RentalListingUpdated(address indexed propertyTokenAddress, uint256 newWeeklyRate);
     event RentalListingCancelled(address indexed propertyTokenAddress);
@@ -32,11 +31,6 @@ contract PropertyRental {
         propertyManager = PropertyManager(_propertyManagerAddress);
     }
     
-    /**
-     * @notice Lists a property for rent
-     * @param propertyTokenAddress The address of the property token
-     * @param weeklyRate The weekly rental rate in wei
-     */
     function listPropertyForRent(address propertyTokenAddress, uint256 weeklyRate) external {
         require(weeklyRate > 0, "Rental rate must be greater than 0");
         
@@ -71,12 +65,7 @@ contract PropertyRental {
         
         emit PropertyListedForRent(propertyTokenAddress, weeklyRate);
     }
-    
-    /**
-     * @notice Updates an existing rental listing
-     * @param propertyTokenAddress The address of the property token
-     * @param newWeeklyRate The new weekly rental rate in wei
-     */
+
     function updateRentalListing(address propertyTokenAddress, uint256 newWeeklyRate) external {
         require(newWeeklyRate > 0, "Rental rate must be greater than 0");
         
@@ -93,10 +82,6 @@ contract PropertyRental {
         emit RentalListingUpdated(propertyTokenAddress, newWeeklyRate);
     }
     
-    /**
-     * @notice Cancels a rental listing
-     * @param propertyTokenAddress The address of the property token
-     */
     function cancelRentalListing(address propertyTokenAddress) external {
         RentalListing storage listing = rentalListings[propertyTokenAddress];
         require(listing.isActive, "No active rental listing found for this property");
@@ -111,10 +96,6 @@ contract PropertyRental {
         emit RentalListingCancelled(propertyTokenAddress);
     }
     
-    /**
-     * @notice Rents a property and removes it from active listings
-     * @param propertyTokenAddress The address of the property token
-     */
     function rentProperty(address propertyTokenAddress) external payable {
         RentalListing storage listing = rentalListings[propertyTokenAddress];
         require(listing.isActive, "Property is not actively listed for rent");
@@ -131,11 +112,6 @@ contract PropertyRental {
         emit PropertyRented(propertyTokenAddress, msg.sender, msg.value);
     }
     
-    /**
-     * @notice Distributes rent proportionally to all token holders
-     * @param propertyTokenAddress The address of the property token
-     * @param rentAmount The amount of rent to distribute
-     */
     function distributeRent(address propertyTokenAddress, uint256 rentAmount) private {
         PropertyToken token = PropertyToken(propertyTokenAddress);
         uint256 totalSupply = token.totalSupply();
@@ -184,18 +160,10 @@ contract PropertyRental {
         emit RentDistributed(propertyTokenAddress, totalDistributed, tokenHolders.length);
     }
     
-    /**
-     * @notice Gets all property tokens listed for rent
-     * @return All property tokens that have ever been listed for rent
-     */
     function getAllListedProperties() external view returns (address[] memory) {
         return listedProperties;
     }
     
-    /**
-     * @notice Gets all currently active rental listings
-     * @return An array of RentalListing structs that are currently active
-     */
     function getActiveRentalListings() external view returns (RentalListing[] memory) {
         // Count active listings
         uint256 activeCount = 0;

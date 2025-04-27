@@ -1,5 +1,3 @@
-// src/components/Marketplace.js // RENAME THIS FILE if you want, e.g., Marketplace.js
-
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import PropertyManagerABI from "../contracts/PropertyManager.json";
@@ -8,7 +6,7 @@ import TokenMarketplaceABI from "../contracts/TokenMarketplace.json";
 import { PROPERTY_MANAGER_ADDRESS, TOKEN_MARKETPLACE_ADDRESS } from "../utils/config";
 import './Marketplace.css';
 
-export default function Marketplace() { // Rename component if file renamed
+export default function Marketplace() { 
   const [contract, setContract] = useState(null);
   const [marketplaceContract, setMarketplaceContract] = useState(null);
   const [signer, setSigner] = useState(null);
@@ -16,31 +14,23 @@ export default function Marketplace() { // Rename component if file renamed
   const [allProperties, setAllProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [propertyDetails, setPropertyDetails] = useState(null);
-  // REMOVE: const [listings, setListings] = useState({}); // We store listings inside propertyDetails now
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false); // Separate loading for details
 
-  // --- State for Modals ---
-  // Keep buy/sell modal states
+
   const [showBuyModal, setShowBuyModal] = useState(false);
-  const [buyAmount, setBuyAmount] = useState("1"); // Use string for input
-  // const [price, setPrice] = useState(0); // Price comes from selected listing
-  // const [sellerAddress, setSellerAddress] = useState(""); // Seller comes from selected listing
+  const [buyAmount, setBuyAmount] = useState("1"); 
   const [selectedListingForBuy, setSelectedListingForBuy] = useState(null); // Store the specific listing being bought
 
   const [showSellModal, setShowSellModal] = useState(false);
   const [sellAmount, setSellAmount] = useState("1"); // Use string for input
   const [sellPrice, setSellPrice] = useState("0.01"); // Use string for input
 
-  // Keep approval state
-  // const [approvalAmount, setApprovalAmount] = useState(""); // No longer needed
   const [isApproving, setIsApproving] = useState(false);
   const [approvalStatus, setApprovalStatus] = useState("");
-  // --- End State for Modals ---
 
 
-  // connectWallet, handleAccountsChanged remain the same...
     const connectWallet = async () => {
     try {
       if (window.ethereum) {
@@ -84,7 +74,6 @@ export default function Marketplace() { // Rename component if file renamed
       setIsConnected(false);
       setAccount("");
       setSigner(null);
-      // Reset everything on disconnect
       setContract(null);
       setMarketplaceContract(null);
       setSelectedProperty(null);
@@ -112,38 +101,30 @@ export default function Marketplace() { // Rename component if file renamed
       );
       setMarketplaceContract(marketplace);
 
-      // Reset UI state related to specific selections
       setShowBuyModal(false);
       setShowSellModal(false);
       setSelectedListingForBuy(null);
 
-      // Reload all properties, which will implicitly clear old listings state
-      if (managerContract) loadAllProperties(managerContract); // Pass contract instance
-      // Reload details ONLY if a property was previously selected AND still exists
+      if (managerContract) loadAllProperties(managerContract); 
       if (selectedProperty) {
-          // We need to re-fetch all properties first to see if it's still valid
-          // Simplification: just reset selection on account change for now
           setSelectedProperty(null);
           setPropertyDetails(null);
-          // loadPropertyDetails(selectedProperty); // Avoid calling with potentially stale data
       }
     }
   };
 
    useEffect(() => {
-    // Initial connection check
     if (window.ethereum) {
       window.ethereum.request({ method: "eth_accounts" })
         .then(accounts => {
           if (accounts.length > 0) {
             console.log("Wallet already connected on load");
-            connectWallet(); // Connect if already permitted
+            connectWallet(); 
           } else {
             console.log("Wallet not connected on load");
           }
         });
 
-      // Listener setup
       const eth = window.ethereum;
       eth.on("accountsChanged", handleAccountsChanged);
 
@@ -152,10 +133,9 @@ export default function Marketplace() { // Rename component if file renamed
         eth.removeListener("accountsChanged", handleAccountsChanged);
       };
     }
-  }, []); // Empty dependency array means this runs once on mount
+  }, []); 
 
-  // --- UPDATED loadAllProperties ---
-  const loadAllProperties = async (managerContract = contract) => { // Accept optional contract instance
+  const loadAllProperties = async (managerContract = contract) => { 
     if (!managerContract) {
          console.log("PropertyManager contract instance not available.");
          return;
@@ -166,34 +146,26 @@ export default function Marketplace() { // Rename component if file renamed
       console.log("Loading all properties from manager...");
       const properties = await managerContract.getAllProperties();
       console.log("Fetched properties:", properties);
-      // Basic check if properties is an array
        if (!Array.isArray(properties)) {
            console.error("getAllProperties did not return an array:", properties);
            setAllProperties([]); // Set to empty array on error
            return;
        }
       setAllProperties(properties);
-      // We no longer load all listings here. Listings are loaded when a property is selected.
     } catch (error) {
       console.error("Error loading all properties:", error);
-      setAllProperties([]); // Reset on error
+      setAllProperties([]); 
     } finally {
       setIsLoading(false);
     }
   };
 
-  // REMOVE loadAllListings function entirely
-
-  // --- UPDATED loadPropertyDetails ---
   const loadPropertyDetails = async (property) => {
-    // Need signer and marketplace contract to load details fully
     if (!signer || !marketplaceContract) {
         console.warn("Signer or MarketplaceContract not ready for loading details.");
-        // Set selected property but indicate details are partial/loading
         setSelectedProperty(property);
-        setPropertyDetails(null); // Clear old details
-        setIsLoadingDetails(true); // Use separate loading state
-        // Optionally, try connecting or show a message
+        setPropertyDetails(null); 
+        setIsLoadingDetails(true); 
         if (!isConnected) {
             alert("Please connect your wallet to view full details and listings.");
         }
@@ -202,57 +174,46 @@ export default function Marketplace() { // Rename component if file renamed
 
     console.log(`Loading details for property: ${property.name} (${property.tokenAddress})`);
     setIsLoadingDetails(true);
-    setSelectedProperty(property); // Set selected property immediately
-    setPropertyDetails(null); // Clear previous details
+    setSelectedProperty(property); 
+    setPropertyDetails(null); 
 
     try {
-      // Create contract instance for the specific property token
       const tokenContract = new ethers.Contract(
         property.tokenAddress,
         PropertyTokenABI.abi,
-        signer // Use signer to get balance, provider could be used for read-only parts
+        signer 
       );
 
-      // Fetch token info concurrently
       const [symbol, decimalsBigInt, totalSupply, owner, balance] = await Promise.all([
           tokenContract.symbol(),
-          tokenContract.decimals(), // Returns BigInt in ethers v6
+          tokenContract.decimals(), 
           tokenContract.totalSupply(),
           tokenContract.owner(),
-          account ? tokenContract.balanceOf(account) : Promise.resolve(ethers.toBigInt(0)) // Fetch balance only if account connected
+          account ? tokenContract.balanceOf(account) : Promise.resolve(ethers.toBigInt(0)) 
       ]);
 
-      // Convert decimals BigInt to number for formatting (usually safe)
       const decimals = Number(decimalsBigInt);
 
       // Format values
       const formattedSupply = ethers.formatUnits(totalSupply, decimals);
       const myBalance = ethers.formatUnits(balance, decimals);
 
-      // --- Fetch Active Listings using the NEW contract function ---
       let activeListings = [];
       try {
           console.log(`Calling getActiveListingsForToken(${property.tokenAddress})...`);
           const rawListings = await marketplaceContract.getActiveListingsForToken(property.tokenAddress);
           console.log(`Raw active listings from contract:`, rawListings);
-          // Process raw listing data (BigInts need formatting)
            activeListings = rawListings.map(listing => ({
               tokenAddress: listing.tokenAddress, // Keep address
               seller: listing.seller,
-              // Keep raw BigInts for calculations, format for display later
               pricePerToken: listing.pricePerToken,
               availableTokens: listing.availableTokens,
               active: listing.active,
-              // Add formatted versions for convenience if needed elsewhere
-              // priceFormatted: ethers.formatEther(listing.pricePerToken),
-              // availableFormatted: ethers.formatUnits(listing.availableTokens, decimals)
           }));
            console.log(`Processed active listings:`, activeListings);
       } catch(listingError) {
           console.error(`Error fetching active listings for ${property.tokenAddress}:`, listingError);
-          // Continue without listings if fetching fails
       }
-      // --- End Fetch Active Listings ---
 
 
       const details = {
@@ -260,45 +221,37 @@ export default function Marketplace() { // Rename component if file renamed
         symbol,
         tokenAddress: property.tokenAddress,
         metadataURI: property.metadataURI,
-        totalSupply: formattedSupply, // Formatted total supply
-        decimals, // Store decimals number
-        myBalance, // Formatted user balance
-        owner, // Original owner address
-        activeListings: activeListings // Store the array of active listings
-        // REMOVE: listing: listing // Remove the single listing concept
+        totalSupply: formattedSupply, 
+        decimals, 
+        myBalance, 
+        owner, 
+        activeListings: activeListings 
       };
 
       console.log("Setting property details state:", details);
       setPropertyDetails(details);
 
-      // We no longer set 'price' or 'sellerAddress' state here,
-      // as those belong to a *specific* listing chosen by the user later.
-
     } catch (error) {
       console.error(`Error loading property details for ${property.tokenAddress}:`, error);
-      setPropertyDetails(null); // Clear details on error
+      setPropertyDetails(null); 
     } finally {
-      setIsLoadingDetails(false); // Finish loading details
+      setIsLoadingDetails(false); 
     }
   };
 
-    // --- handleBuyTokens needs to use selectedListingForBuy ---
     const handleBuyTokens = async () => {
-        // Check necessary conditions, including selectedListingForBuy
         if (!marketplaceContract || !signer || !account || !selectedProperty || !propertyDetails || !selectedListingForBuy) {
              alert("Cannot proceed with purchase. Ensure wallet is connected, property and listing are selected, and details are available.");
              return;
          }
 
-        // Get details from the *selected listing* state
         const listing = selectedListingForBuy;
-        const tokenAddress = selectedProperty.tokenAddress; // Still from selectedProperty
-        const seller = listing.seller; // Seller from the specific listing
-        const decimals = propertyDetails.decimals; // Token decimals
-        const pricePerWholeTokenWei = listing.pricePerToken; // Price from the specific listing (BigInt)
-        const availableTokensSmallestUnit = listing.availableTokens; // Available from specific listing (BigInt)
+        const tokenAddress = selectedProperty.tokenAddress; 
+        const seller = listing.seller; 
+        const decimals = propertyDetails.decimals; 
+        const pricePerWholeTokenWei = listing.pricePerToken; 
+        const availableTokensSmallestUnit = listing.availableTokens; 
 
-        // Get buyer's input amount (number of WHOLE tokens)
         const amountStringToBuy = buyAmount;
         let amountToBuyWholeTokens;
         try {
@@ -311,13 +264,11 @@ export default function Marketplace() { // Rename component if file renamed
 
         const amountToBuySmallestUnit = ethers.parseUnits(amountStringToBuy, decimals);
 
-        // Bounds Checking vs selected listing's availability
         if (amountToBuySmallestUnit > availableTokensSmallestUnit) {
              alert(`Selected listing only has ${ethers.formatUnits(availableTokensSmallestUnit, decimals)} tokens available.`);
              return;
         }
 
-        // Calculate Total Cost based on selected listing's price
         const totalCostWei = pricePerWholeTokenWei * BigInt(amountToBuyWholeTokens);
         console.log(`Buying ${amountStringToBuy} tokens from seller ${seller}`);
         console.log(`Calculated Total Cost (WEI): ${totalCostWei.toString()}`);
@@ -325,7 +276,6 @@ export default function Marketplace() { // Rename component if file renamed
         setIsLoading(true); // Use modal's loading state
 
         try {
-            // Call buyTokens with details from the specific listing
             const tx = await marketplaceContract.connect(signer).buyTokens(
                 tokenAddress,
                 seller, // Seller from the selected listing
@@ -340,12 +290,10 @@ export default function Marketplace() { // Rename component if file renamed
             console.log("Buy transaction confirmed!");
             alert(`Successfully purchased ${amountStringToBuy} tokens!`);
 
-            // Close modal and refresh data
             setShowBuyModal(false);
-            setSelectedListingForBuy(null); // Clear selected listing
-            setBuyAmount("1"); // Reset buy amount input
-            loadPropertyDetails(selectedProperty); // Reload details for the currently selected property
-            // loadAllProperties(); // Optionally refresh all properties grid too
+            setSelectedListingForBuy(null); 
+            setBuyAmount("1"); 
+            loadPropertyDetails(selectedProperty); 
 
         } catch (error) {
             console.error("Error buying tokens:", error);
@@ -356,8 +304,6 @@ export default function Marketplace() { // Rename component if file renamed
         }
     };
 
-
-  // handleApproveMarketplace remains the same (approves max)
     const handleApproveMarketplace = async () => {
         if (!signer || !account || !selectedProperty || !propertyDetails) {
             alert("Please connect wallet and select a property first.");
@@ -442,8 +388,7 @@ export default function Marketplace() { // Rename component if file renamed
             setShowSellModal(false);
             setSellAmount("1");
             setSellPrice("0.01");
-            loadPropertyDetails(selectedProperty); // Refresh details
-            // loadAllProperties(); // Optionally refresh grid
+            loadPropertyDetails(selectedProperty); 
 
         } catch (error) {
             console.error("Error listing tokens:", error);
@@ -465,7 +410,6 @@ export default function Marketplace() { // Rename component if file renamed
   }, [contract, account, marketplaceContract]); // Dependencies for initial load
 
 
-  // --- UPDATED JSX ---
   if (!isConnected) {
     return (
       <div className="connect-container">
@@ -483,11 +427,10 @@ export default function Marketplace() { // Rename component if file renamed
       </div>
 
       <div className="marketplace-content">
-        {/* Properties Grid (remains mostly the same, maybe update badge logic) */}
         <div className="properties-grid">
           <div className="grid-header">
             <h3>Available Properties</h3>
-            <button onClick={() => loadAllProperties()} disabled={isLoading}> {/* Pass no args to use state */}
+            <button onClick={() => loadAllProperties()} disabled={isLoading}> 
               {isLoading ? "Loading..." : "Refresh Properties"}
             </button>
           </div>
@@ -499,7 +442,6 @@ export default function Marketplace() { // Rename component if file renamed
           ) : (
             <div className="property-cards">
               {allProperties.map((property, index) => {
-                // Decide badge based on whether *any* listing exists from details (if loaded)
                  const hasListings = propertyDetails?.tokenAddress === property.tokenAddress && propertyDetails.activeListings.length > 0;
                 return (
                   <div
@@ -512,7 +454,6 @@ export default function Marketplace() { // Rename component if file renamed
                     </div>
                     <div className="property-card-content">
                       <h4>{property.name}</h4>
-                      {/* Simple "For Sale" badge if any listing exists */}
                       {hasListings && (
                         <div className="listing-badge">
                           For Sale
@@ -526,7 +467,6 @@ export default function Marketplace() { // Rename component if file renamed
           )}
         </div>
 
-        {/* Property Details Panel */}
         <div className="property-details-panel">
           {isLoadingDetails ? ( // Use separate loading state
             <div className="loading">Loading property details...</div>
@@ -534,14 +474,12 @@ export default function Marketplace() { // Rename component if file renamed
             <div className="property-details">
               <h3>{propertyDetails.name} ({propertyDetails.symbol})</h3>
 
-              {/* Basic Details (remain the same) */}
               <div className="detail-row"><span className="detail-label">Total Supply:</span><span className="detail-value">{propertyDetails.totalSupply} tokens</span></div>
               <div className="detail-row"><span className="detail-label">Your Balance:</span><span className="detail-value">{propertyDetails.myBalance} tokens</span></div>
               <div className="detail-row"><span className="detail-label">Owner:</span><span className="detail-value owner-address">{propertyDetails.owner.substring(0, 6)}...{propertyDetails.owner.substring(propertyDetails.owner.length - 4)}{propertyDetails.owner.toLowerCase() === account.toLowerCase() && " (You)"}</span></div>
               <div className="detail-row"><span className="detail-label">Token Address:</span><span className="detail-value token-address">{propertyDetails.tokenAddress}</span></div>
 
 
-              {/* --- Display ALL Active Listings --- */}
               <div className="listing-info" style={{ marginTop: '15px' }}>
                   <h4>Active Listings</h4>
                   {propertyDetails.activeListings.length === 0 ? (
@@ -565,7 +503,6 @@ export default function Marketplace() { // Rename component if file renamed
                                       <span className="detail-label">Available: </span>
                                       <span className="detail-value">{ethers.formatUnits(listing.availableTokens, propertyDetails.decimals)} tokens</span>
                                   </div>
-                                  {/* Add Buy button next to each listing if not the seller */}
                                   {listing.seller.toLowerCase() !== account.toLowerCase() && (
                                       <button
                                           className="buy-button small-buy-button"
@@ -584,14 +521,9 @@ export default function Marketplace() { // Rename component if file renamed
                       </ul>
                   )}
               </div>
-              {/* --- End Display ALL Active Listings --- */}
 
-
-              {/* Action Buttons Container */}
               <div className="actions-container" style={{ marginTop: '20px' }}>
-                 {/* REMOVED old single Buy button logic */}
 
-                {/* Show Sell button if user has tokens */}
                 {parseFloat(propertyDetails.myBalance) > 0 && (
                   <button
                     className="sell-button"
@@ -601,7 +533,6 @@ export default function Marketplace() { // Rename component if file renamed
                   </button>
                 )}
 
-                {/* Show Approval section if user has tokens (can approve what they own) */}
                 {parseFloat(propertyDetails.myBalance) > 0 && (
                     <div className="approval-section" style={{ marginTop: '15px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
                         <h4>Approve Marketplace</h4>
@@ -628,8 +559,6 @@ export default function Marketplace() { // Rename component if file renamed
         </div>
       </div>
 
-      {/* --- UPDATED Buy Modal --- */}
-      {/* Now depends on selectedListingForBuy */}
       {showBuyModal && selectedListingForBuy && propertyDetails && (
         <div className="modal-overlay">
           <div className="modal">
@@ -642,12 +571,10 @@ export default function Marketplace() { // Rename component if file renamed
               </div>
               <div className="form-group">
                 <label>Available:</label>
-                {/* Format available amount from the selected listing */}
                 <p>{ethers.formatUnits(selectedListingForBuy.availableTokens, propertyDetails.decimals)} tokens</p>
               </div>
               <div className="form-group">
                 <label>Price per token:</label>
-                {/* Format price from the selected listing */}
                 <p>{ethers.formatEther(selectedListingForBuy.pricePerToken)} ETH</p>
               </div>
               <div className="form-group">
@@ -655,7 +582,6 @@ export default function Marketplace() { // Rename component if file renamed
                 <input
                   type="number"
                   min="1"
-                  // Set max based on the selected listing's available amount
                   max={ethers.formatUnits(selectedListingForBuy.availableTokens, propertyDetails.decimals)}
                   value={buyAmount}
                   onChange={(e) => setBuyAmount(e.target.value)}
@@ -663,7 +589,6 @@ export default function Marketplace() { // Rename component if file renamed
               </div>
               <div className="form-group">
                 <label>Total cost:</label>
-                 {/* Calculate cost based on selected listing's price */}
                 <p>{(parseFloat(ethers.formatEther(selectedListingForBuy.pricePerToken)) * parseFloat(buyAmount || "0")).toFixed(6)} ETH</p>
               </div>
             </div>
@@ -671,13 +596,13 @@ export default function Marketplace() { // Rename component if file renamed
             <div className="modal-actions">
               <button
                 className="cancel-button"
-                onClick={() => {setShowBuyModal(false); setSelectedListingForBuy(null);}} // Clear selected listing on cancel
+                onClick={() => {setShowBuyModal(false); setSelectedListingForBuy(null);}} 
               >
                 Cancel
               </button>
               <button
                 className="confirm-button"
-                onClick={handleBuyTokens} // handleBuyTokens now uses selectedListingForBuy state
+                onClick={handleBuyTokens} 
                 disabled={isLoading}
               >
                 {isLoading ? "Processing..." : "Confirm Purchase"}
@@ -686,16 +611,12 @@ export default function Marketplace() { // Rename component if file renamed
           </div>
         </div>
       )}
-      {/* --- End UPDATED Buy Modal --- */}
 
-
-      {/* Sell Modal (remains mostly the same) */}
       {showSellModal && propertyDetails && (
         <div className="modal-overlay">
           <div className="modal">
             <h3>Sell {propertyDetails.name} Tokens</h3>
             <div className="modal-content">
-              {/* ... form groups for balance, amount, price ... */}
                <div className="form-group"><label>Your balance:</label><p>{propertyDetails.myBalance} tokens</p></div>
                <div className="form-group"><label>Amount to sell:</label><input type="number" min="1" max={parseFloat(propertyDetails.myBalance)} value={sellAmount} onChange={(e) => setSellAmount(e.target.value)}/></div>
                <div className="form-group"><label>Price per token (ETH):</label><input type="number" step="any" min="0.000001" value={sellPrice} onChange={(e) => setSellPrice(e.target.value)}/></div>

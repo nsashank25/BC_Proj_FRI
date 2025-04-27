@@ -4,7 +4,6 @@ import { PROPERTY_MANAGER_ADDRESS, PROPERTY_RENTAL_ADDRESS } from "../utils/conf
 import PropertyManagerABI from "../contracts/PropertyManager.json";
 import PropertyTokenABI from "../contracts/PropertyToken.json";
 import PropertyRentalABI from "../contracts/PropertyRental.json";
-// import './PropertyRent.css';
 
 function PropertyRent() {
   const [account, setAccount] = useState("");
@@ -236,7 +235,6 @@ function PropertyRent() {
   const handleCancelListing = async (propertyAddress) => {
     setLoading(true);
     try {
-      // Updated for ethers v6
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const rentalContract = new ethers.Contract(
