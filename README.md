@@ -10,7 +10,7 @@ Steps to Run:
 
 # Copy ABIs and Contract Addresses:
 
-```./copy_init.sh``` should copy the ABIs into respective folder in frontend/, manually copy the contract addresses into frontend/untils/config.js
+```./copy_init.sh``` should copy the ABIs into respective folder in frontend/, manually copy the contract addresses into frontend/src/untils/config.js
 
 # Install node modules:
 
